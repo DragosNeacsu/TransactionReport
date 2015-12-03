@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactionReport", "TransactionReport\TransactionReport.csproj", "{D360EA62-1CD8-4862-BF1A-5DD02B0D12F6}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupTransactionReport", "SetupTransactionReport\SetupTransactionReport.vdproj", "{92EC0117-A6D7-440E-ADC3-399C2FB95B3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D360EA62-1CD8-4862-BF1A-5DD02B0D12F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D360EA62-1CD8-4862-BF1A-5DD02B0D12F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D360EA62-1CD8-4862-BF1A-5DD02B0D12F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D360EA62-1CD8-4862-BF1A-5DD02B0D12F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92EC0117-A6D7-440E-ADC3-399C2FB95B3C}.Debug|Any CPU.ActiveCfg = Debug
+		{92EC0117-A6D7-440E-ADC3-399C2FB95B3C}.Release|Any CPU.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

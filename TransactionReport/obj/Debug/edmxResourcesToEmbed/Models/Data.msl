@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="ExportTransactionsModelStoreContainer" CdmEntityContainer="Entities">
+    <FunctionImportMapping FunctionImportName="Customer_Get" FunctionName="ExportTransactionsModel.Store.Customer_Get">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="ExportTransactionsModel.Customer_Get_Result">
+          <ScalarProperty Name="CustomerId" ColumnName="CustomerId" />
+          <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+          <ScalarProperty Name="CustomerMail" ColumnName="CustomerMail" />
+          <ScalarProperty Name="IsAffiliate" ColumnName="IsAffiliate" />
+          <ScalarProperty Name="SalesManagerId" ColumnName="SalesManagerId" />
+          <ScalarProperty Name="SalesName" ColumnName="SalesName" />
+          <ScalarProperty Name="SalesEmail" ColumnName="SalesEmail" />
+          <ScalarProperty Name="region" ColumnName="region" />
+          <ScalarProperty Name="shortName" ColumnName="shortName" />
+          <ScalarProperty Name="IsAds" ColumnName="IsAds" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="TemporaryTransactions_Get" FunctionName="ExportTransactionsModel.Store.TemporaryTransactions_Get">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="ExportTransactionsModel.TemporaryTransactions_Get_Result">
+          <ScalarProperty Name="VeApp" ColumnName="VeApp" />
+          <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+          <ScalarProperty Name="Site" ColumnName="Site" />
+          <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
+          <ScalarProperty Name="PromoCode" ColumnName="PromoCode" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Total" ColumnName="Total" />
+          <ScalarProperty Name="CurrencySymbol" ColumnName="CurrencySymbol" />
+          <ScalarProperty Name="HasDecimal" ColumnName="HasDecimal" />
+          <ScalarProperty Name="CheckOutDate" ColumnName="CheckOutDate" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -1,0 +1,33 @@
+11/30/2015 2:49:33 PM: Service start runing at: 11/30/2015 2:49:33 PM
+11/30/2015 2:49:37 PM: Customer: williamstest1
+11/30/2015 2:49:37 PM: Generating excel file for - williamstest1
+11/30/2015 2:49:39 PM: Start sending email to EMailAddress1
+11/30/2015 2:49:44 PM: Windows service stopped
+11/30/2015 2:51:36 PM: Service start runing at: 11/30/2015 2:51:36 PM
+11/30/2015 2:51:37 PM: Customer: VeAppsTestSite
+11/30/2015 2:51:40 PM: Generating excel file for - VeAppsTestSite
+11/30/2015 2:52:14 PM: Customer: williamstest1
+11/30/2015 2:52:15 PM: Generating excel file for - williamstest1
+11/30/2015 2:52:15 PM: Customer: Selenium
+11/30/2015 2:52:15 PM: Generating excel file for - Selenium
+11/30/2015 2:52:16 PM: Customer: selenium.mclaren
+11/30/2015 2:52:16 PM: Generating excel file for - selenium.mclaren
+11/30/2015 2:52:16 PM: Start sending email to dragos.neacsu@veinteractive.com
+11/30/2015 2:52:17 PM: Start sending email to EMailAddress1
+11/30/2015 2:52:18 PM: Start sending email to EMailAddress9
+11/30/2015 2:52:23 PM: Windows service stopped
+11/30/2015 4:49:23 PM: Service start runing at: 11/30/2015 4:49:23 PM
+11/30/2015 5:17:48 PM: Service start runing at: 11/30/2015 5:17:48 PM
+11/30/2015 5:18:37 PM: Service start runing at: 11/30/2015 5:18:37 PM
+11/30/2015 5:18:39 PM: Customer: VeAppsTestSite
+11/30/2015 5:18:42 PM: Generating excel file for - VeAppsTestSite
+11/30/2015 5:19:13 PM: Customer: williamstest1
+11/30/2015 5:19:15 PM: Generating excel file for - williamstest1
+11/30/2015 5:19:15 PM: Customer: Selenium
+11/30/2015 5:19:16 PM: Generating excel file for - Selenium
+11/30/2015 5:19:16 PM: Customer: selenium.mclaren
+11/30/2015 5:19:17 PM: Generating excel file for - selenium.mclaren
+11/30/2015 5:19:18 PM: Start sending email to dragos.neacsu@veinteractive.com
+11/30/2015 5:19:19 PM: Start sending email to EMailAddress1
+11/30/2015 5:19:40 PM: Start sending email to EMailAddress9
+11/30/2015 5:20:10 PM: Windows service stopped

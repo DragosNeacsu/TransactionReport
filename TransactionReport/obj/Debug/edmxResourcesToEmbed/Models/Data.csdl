@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ExportTransactionsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <FunctionImport Name="Customer_Get" ReturnType="Collection(ExportTransactionsModel.Customer_Get_Result)">
+      <Parameter Name="RegionList" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="TemporaryTransactions_Get" ReturnType="Collection(ExportTransactionsModel.TemporaryTransactions_Get_Result)">
+      <Parameter Name="CustomerId" Mode="In" Type="Int32" />
+      <Parameter Name="OrderNumber" Mode="In" Type="Boolean" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="Customer_Get_Result">
+    <Property Type="Int32" Name="CustomerId" Nullable="false" />
+    <Property Type="String" Name="CustomerName" Nullable="false" MaxLength="50" />
+    <Property Type="String" Name="CustomerMail" Nullable="true" MaxLength="200" />
+    <Property Type="Boolean" Name="IsAffiliate" Nullable="false" />
+    <Property Type="Int32" Name="SalesManagerId" Nullable="true" />
+    <Property Type="String" Name="SalesName" Nullable="true" MaxLength="1001" />
+    <Property Type="String" Name="SalesEmail" Nullable="true" MaxLength="500" />
+    <Property Type="Int32" Name="region" Nullable="false" />
+    <Property Type="String" Name="shortName" Nullable="true" MaxLength="30" />
+    <Property Type="Boolean" Name="IsAds" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="TemporaryTransactions_Get_Result">
+    <Property Type="String" Name="VeApp" Nullable="true" MaxLength="100" />
+    <Property Type="DateTime" Name="TransactionDate" Nullable="true" />
+    <Property Type="String" Name="Site" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="OrderNumber" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="PromoCode" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="Type" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="200" />
+    <Property Type="Double" Name="Total" Nullable="true" />
+    <Property Type="String" Name="CurrencySymbol" Nullable="true" MaxLength="3" />
+    <Property Type="Boolean" Name="HasDecimal" Nullable="true" />
+    <Property Type="DateTime" Name="CheckOutDate" Nullable="true" />
+  </ComplexType>
+</Schema>

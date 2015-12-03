@@ -1,0 +1,152 @@
+﻿DECLARE @CustomerId int
+SET @CustomerId={0}
+CREATE TABLE #tmp_Customer
+	(
+		CustomerId int NOT NULL,
+		CustomerName NVARCHAR(50),
+		CultureInfo NVARCHAR(15)
+	)
+	IF NOT EXISTS(SELECT a.CustomerId FROM [ControlPanel].[dbo].[Customer] a WHERE a.CustomerId=@CustomerId and CustomerType=10)
+	BEGIN
+		INSERT INTO #tmp_Customer
+			(
+				CustomerId,CustomerName,CultureInfo
+			)
+			SELECT a.CustomerId, 
+				   a.CustomerName, 
+				   c.Culture
+			FROM [ControlPanel].[dbo].[Customer] a
+				INNER JOIN [Base].[dbo].[CountryCulture] b ON
+					b.CountryId = a.region
+				INNER JOIN [Base].[dbo].[CultureInfo] c ON
+					c.CultureInfoId = b.CultureInfoId
+			WHERE CustomerId=@CustomerId
+				AND b.Prefered = 1
+	END
+	ELSE
+	BEGIN
+		INSERT INTO #tmp_Customer
+			(
+				CustomerId,CustomerName,CultureInfo
+			)
+			SELECT a.CustomerId, 
+			       a.CustomerName, 
+			       d.Culture 
+			FROM [ControlPanel].[dbo].[Customer] a
+				INNER JOIN [ControlPanel].[dbo].[CustomerRelationship] b ON
+					b.CustomerId = a.CustomerId
+				INNER JOIN [Base].[dbo].[CountryCulture] c ON
+					c.CountryId = a.region
+				INNER JOIN [Base].[dbo].[CultureInfo] d ON
+					d.CultureInfoId = c.CultureInfoId
+			WHERE b.CustomerParentId=@CustomerId	
+	END
+	
+	SELECT CAST(
+				CASE 
+					WHEN a.TransactionTypeId IN (5,6,17,18,19,20,21,22,24,25,26,27)
+						THEN 'VePrompt'
+					WHEN a.TransactionTypeId IN (1,2,3,4,7,8,9,10,11,12,13,14,23)
+						THEN 'VeContact'
+					WHEN a.TransactionTypeId IN (15,16)
+						THEN 'VeAssist'
+					WHEN a.TransactionTypeId IN (28,29)
+						THEN 'VePromote'
+				END AS NVARCHAR(100)) AS 'VeApp',
+			CAST(a.CreationDate as date) as 'TransactionDate',	
+			
+			d.JourneyName AS 'Site',
+			a.OrderNumber AS 'OrderNumber',
+			a.PromoCodeName AS 'PromoCode',
+			c.TransactionName AS 'Type',
+			a.Email AS 'Email',
+			ISNULL(a.Total, 0) AS 'Total',
+			--ISNULL(a.Total, 0) * ISNULL(a.ConversionValue, 1) AS 'TotalCustomerCurrency',
+			l.ISO3 AS 'CurrencySymbol',
+			b.HasDecimal,
+			CAST((CASE WHEN   j.IsPostInvoicing = 0 OR j.IsPostInvoicing IS NULL
+						THEN null 
+					ELSE
+						CASE WHEN j.DaysDelayInvoice IS NOT NULL 
+							THEN ISNULL(g.CheckOutDate,a.CreationDate + j.DaysDelayInvoice )
+					END
+			END) AS date) AS 'CheckOutDate',
+			f.CriteriaGroupName AS 'CriteriaGroup',
+			h.ExtraField1,
+			h.ExtraField2,
+			h.ExtraField3
+		FROM [Transaction].dbo.[Transaction] a
+			INNER JOIN [Base].dbo.[Currency] b ON
+				b.CurrencyId = a.CurrencyId
+			INNER JOIN [Transaction].dbo.TransactionType c ON
+				c.TransactionTypeId = a.TransactionTypeId
+			INNER JOIN [ControlPanel].dbo.Journey d ON
+				d.CustomerId = a.CustomerId
+				AND d.JourneyId = a.JourneyId
+			LEFT JOIN [Merchant].dbo.JourneyCommission e ON
+				e.JourneyCommissionId = a.JourneyCommissionId
+			LEFT JOIN [Merchant].dbo.CriteriaGroup f ON
+				f.CriteriaGroupId = e.CriteriaGroupId
+			LEFT JOIN 
+				(
+				SELECT a.IdTransaction, 
+						MAX(CASE WHEN b.FormMappingTypeId=33 THEN a.Value ELSE NULL END) as 'CheckOutDate',
+						MAX(CASE WHEN b.FormMappingTypeId=32 THEN a.Value ELSE NULL END) as 'CheckInDate'						
+					FROM 
+						(
+						SELECT a.IdTransaction,
+								a.CustomerId,								
+								T.c.value('FormMappingId[1]', 'int') as 'FormMappingId',																		
+								T.c.value('Value[1]', 'nvarchar(50)') as 'Value'	
+							FROM [Transaction].[dbo].[Transaction] a
+								CROSS APPLY ExtraFields.nodes('/ExtraColumns/Row') T(c)			
+							WHERE a.ExtraFields IS NOT NULL 
+						) a
+						INNER JOIN [ControlPanel].dbo.FormMapping b ON
+							b.CustomerId=a.CustomerId
+							AND b.FormMappingId=a.FormMappingId
+					WHERE b.FormMappingTypeId IN (32,33) --32 CheckInDate, 33 CheckOutDate
+					GROUP BY a.IdTransaction	
+				) g ON
+				g.IdTransaction=a.IdTransaction
+			LEFT JOIN 
+				(
+					SELECT a.IdTransaction,
+							MAX(CASE b.TypeId WHEN 2 THEN a.Value ELSE NULL END) as 'ExtraField1',
+							MAX(CASE b.TypeId WHEN 3 THEN a.Value ELSE NULL END) as 'ExtraField2',
+							MAX(CASE b.TypeId WHEN 4 THEN a.Value ELSE NULL END) as 'ExtraField3'
+						FROM 
+							(
+								SELECT a.IdTransaction,
+									a.CustomerId,								
+									T.c.value('FormMappingId[1]', 'int') as 'FormMappingId',																		
+									T.c.value('Value[1]', 'nvarchar(50)') as 'Value'	
+								FROM [Transaction].[dbo].[Transaction] a
+									CROSS APPLY ExtraFields.nodes('/ExtraColumns/Row') T(c)			
+								WHERE a.ExtraFields IS NOT NULL 
+							) a
+							INNER JOIN [ControlPanel].dbo.[VeM_TransactionPersonalization] b ON
+		 						b.CustomerId=a.CustomerId
+								AND b.FormMappingId=a.FormMappingId
+							INNER JOIN [ControlPanel].dbo.[VeM_TransactionPersonalizationType] c ON
+								c.Id=b.TypeId
+						WHERE b.[TypeId] != 1 -- <> 'None'
+						GROUP BY a.IdTransaction 
+				) h ON
+				h.IdTransaction=a.IdTransaction 
+			LEFT JOIN [ControlPanel].[dbo].[VeC_Personality] i ON
+				i.VeC_PersonalityId=a.PersonalityId
+			LEFT JOIN [ControlPanel].dbo.[JourneyExtended] j ON
+				j.JourneyId=a.JourneyId
+			INNER JOIN #tmp_Customer k ON
+				k.CustomerId = a.CustomerId
+			LEFT JOIN [Base].dbo.[Currency] l ON
+				l.CurrencyId = a.InvoiceCurrencyId
+		WHERE a.TransactionStatusId < 12
+			AND a.ConversionValue IS NOT NULL
+			AND a.CustomerId=@CustomerId
+			AND a.ConversionValue IS NOT NULL
+			AND DATEPART(m, a.CreationDate) = DATEPART(m, DATEADD(m, -1, getdate()))
+			AND DATEPART(yyyy, a.CreationDate) = DATEPART(yyyy, DATEADD(m, -1, getdate()))
+		
+		DROP TABLE #tmp_Customer

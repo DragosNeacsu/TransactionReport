@@ -1,0 +1,48 @@
+﻿SELECT DISTINCT a.CustomerId
+			,a.CustomerName
+			,a.CustomerMail
+			,a.IsAffiliate
+			,a.SalesManagerId
+			,c.FirstName+' '+c.FamilyName as 'SalesName'
+			,c.EMailAddress as 'SalesEmail'
+			,a.region
+			,b.shortName
+			,Convert(BIT, e.IsAds) as 'IsAds'
+			,f.ShowEmailInReport
+			--,d.languageId
+		FROM [ControlPanel].[dbo].[Customer] a
+			LEFT JOIN [Base].[dbo].[Country] b ON 
+				b.CountryId = a.region
+			LEFT JOIN [ControlPanel].[dbo].[SalesManager] c ON 
+				a.SalesManagerId=c.SalesManagerId
+			INNER JOIN
+				(
+					SELECT DISTINCT CustomerId 
+					FROM [Transaction].[dbo].[Transaction]
+					WHERE DATEPART(m, CreationDate) = DATEPART(m, DATEADD(m, -1, getdate()))
+						   AND DATEPART(yyyy, CreationDate) = DATEPART(yyyy, DATEADD(m, -1, getdate()))
+                            AND TransactionStatusId<12						
+				)d ON
+				d.CustomerId=a.CustomerId
+			INNER JOIN
+			(
+				SELECT a.CustomerId, 
+				MAX(CASE WHEN a.AppId=1 THEN a.State ELSE 0 END) as 'IsCapture', 
+				MAX(CASE WHEN a.AppId=2 THEN a.State ELSE 0 END) as 'IsContact', 
+				MAX(CASE WHEN a.AppId=3 THEN a.State ELSE 0 END) as 'IsOldChat', 
+				MAX(CASE WHEN a.AppId=4 THEN a.State ELSE 0 END) as 'IsAds', 
+				MAX(CASE WHEN a.AppId=5 THEN a.State ELSE 0 END) as 'IsAssist', 
+				MAX(CASE WHEN a.AppId=6 THEN a.State ELSE 0 END) as 'IsNewChat', 
+				MAX(CASE WHEN a.AppId=7 THEN a.State ELSE 0 END) as 'IsPromote'
+			FROM [HealthCheck].[dbo].[CustomerApps] a
+			GROUP BY a.CustomerId
+			)e ON
+			e.CustomerId=a.CustomerId
+			INNER JOIN
+			(
+				SELECT a.CustomerId,
+				a.ShowEmailInReport
+				FROM [Merchant].[dbo].[PaymentAccount] a
+			)f on
+			f.CustomerId=a.CustomerId
+		WHERE a.region IN (SELECT CAST(a.Match as int) as 'region' FROM [Contact].[dbo].[RegExSplit](',','{0}',0) a)
